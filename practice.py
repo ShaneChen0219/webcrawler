@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 from datetime import datetime
 import jsons
+import pandas as pd
 
 class webcrawler():
     def __init__(self,url):
@@ -37,8 +38,9 @@ class webcrawler():
             
             #self.record_str.append({'time':time_str,'price':price,'open':open,'high':high,'low':low,'vol':vol,'change':change})
             self.record_str.append([times,price,open,high,low,vol,change])
+
         result = self.list2json(self.record_str)
-        return result   
+        return self.record_str   
 
     def time_filter(self,time_start,time_end):
         """
@@ -57,11 +59,26 @@ class webcrawler():
     def list2json(self,list):
         json_list = jsons.dumps(list)
         return json_list
+
+    def excel(self,a):
+        df = pd.DataFrame(a)
+        return df
+
+
+
+    
 if __name__ == "__main__":
      #執行__init__(這是預設的)
      ss = webcrawler(url="https://cn.investing.com/equities/tesla-motors-historical-data") 
      #執行__call__(這是預設的)
      web = ss()
-     print(web)
+    #  print(web)
     #  time = ss.time_filter("2022070100","2022072000")
     #  print(time)
+     df = pd.DataFrame(web)
+     writer = pd.ExcelWriter("TEST.xlsx")
+     df.to_excel(writer)
+     writer.save()
+
+    #  toexcel1 = pd.ExcelWriter("TEST.xlsx")
+    #  web.to_excel()
